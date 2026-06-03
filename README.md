@@ -42,7 +42,7 @@ semantic-plagiarism/
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/username/semantic-plagiarism.git
+git clone https://github.com/Khairulumam92/semantic-plagiarism.git
 cd semantic-plagiarism
 
 # 2. Buat virtual environment
