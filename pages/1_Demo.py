@@ -9,6 +9,16 @@ from preprocessing import clean_text
 st.set_page_config(page_title="Demo", layout="wide")
 st.title("Demo Deteksi Plagiarisme")
 
+@st.cache_resource
+def load_sbert_model():
+    from model_sbert import SBERTModel
+    return SBERTModel()
+
+@st.cache_resource
+def load_indobert_model():
+    from model_indobert import IndoBERTModel
+    return IndoBERTModel()
+
 csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', 'hasil_evaluasi.csv')
 thresholds = {'TF-IDF': 0.5, 'SBERT': 0.75, 'IndoBERT': 0.75}
 if os.path.exists(csv_path):
@@ -32,12 +42,10 @@ if st.button("Cek Similaritas"):
                 model.fit([(t1, t2)])
                 score = model.get_similarity(t1, t2)
             elif model_choice == "SBERT":
-                from model_sbert import SBERTModel
-                model = SBERTModel()
+                model = load_sbert_model()
                 score = model.get_similarity(t1, t2)
             else:
-                from model_indobert import IndoBERTModel
-                model = IndoBERTModel()
+                model = load_indobert_model()
                 score = model.get_similarity(t1, t2)
 
         threshold = thresholds[model_choice]
