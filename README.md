@@ -5,7 +5,8 @@
 | **Nama** | Moh. Khairul Umam |
 | **NIM** | 202310370311448 |
 | **Kelas** | NLP B |
-| **Website** | [nlp.kair0s.my.id](https://nlp.kair0s.my.id) |
+
+**Dashboard Tugas Akhir:** [nlp.kair0s.my.id](https://nlp.kair0s.my.id)
 
 Proyek ini membandingkan tiga pendekatan untuk mendeteksi plagiarisme semantik pada teks Bahasa Indonesia:
 - **TF-IDF** (Baseline klasik)
