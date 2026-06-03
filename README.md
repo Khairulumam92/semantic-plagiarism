@@ -20,30 +20,48 @@ Proyek ini membandingkan tiga pendekatan untuk mendeteksi plagiarisme semantik p
 | Quora Paraphrase Indonesia | Kaggle | 150k+ pasang | [Download](https://www.kaggle.com/datasets/louisowen6/quora-paraphrasing-bahasa-indonesia-version) |
 | MSRP Indonesia | HuggingFace | 5.8k pasang | [Download](https://huggingface.co/datasets/jakartaresearch/id-paraphrase-detection) |
 
+> Dataset MSRP Indonesia sudah tersedia di folder `data/`. Dataset Quora Indonesia bersifat opsional dan dapat ditambahkan untuk eksperimen lebih lanjut.
+
 ## Struktur Folder
 
 ```
 semantic-plagiarism/
-├── app.py                      # Entry point Streamlit
-├── preprocessing.py            # Fungsi cleaning teks
+├── app.py                      # Entry point Streamlit (halaman beranda)
+├── preprocessing.py            # Fungsi cleaning teks (lowercase, hapus URL/mention/tanda baca)
 ├── model_tfidf.py              # Baseline: TF-IDF + cosine similarity
-├── model_sbert.py              # Model 1: SBERT multilingual
-├── model_indobert.py           # Model 2: IndoBERT + mean pooling
-├── evaluate.py                 # F1, Precision, Recall, AUC-ROC
+├── model_sbert.py              # Model 1: Multilingual SBERT + cosine similarity
+├── model_indobert.py           # Model 2: IndoBERT + mean pooling + cosine similarity
+├── evaluate.py                 # Fungsi evaluasi: F1, Precision, Recall, AUC-ROC, threshold tuning
+├── run_pipeline.py             # Script lengkap: download data → train → evaluasi (all-in-one)
 ├── requirements.txt            # Dependencies
-├── README.md                   # Dokumentasi
+├── README.md                   # Dokumentasi proyek
 ├── .gitignore
 ├── pages/
-│   ├── 1_Demo.py               # Demo interaktif
-│   ├── 2_Evaluasi.py           # Tabel metrik + grafik
-│   └── 3_Tentang.py            # Penjelasan metode
+│   ├── 1_Demo.py               # Demo interaktif: input 2 teks → pilih model → hasil
+│   ├── 2_Evaluasi.py           # Tabel metrik + grafik ROC curve + confusion matrix
+│   └── 3_Tentang.py            # Penjelasan metode, dataset, dan referensi
 ├── notebooks/
-│   ├── 01_EDA_preprocessing.ipynb
-│   ├── 02_model_comparison.ipynb
-│   └── 03_evaluation_final.ipynb
-├── assets/                     # Hasil evaluasi (ROC, CM, CSV)
-├── data/                       # Dataset (tidak di-commit)
-└── docker/                     # Deployment configuration
+│   ├── 01_EDA_preprocessing.ipynb  # EDA, distribusi label, preprocessing
+│   ├── 02_model_comparison.ipynb   # Running 3 model, hitung similarity
+│   └── 03_evaluation_final.ipynb   # Threshold tuning, F1/AUC, generate grafik
+├── assets/
+│   ├── roc_curve.png               # Grafik ROC curve ketiga model
+│   ├── confusion_matrix_tfidf.png  # Confusion matrix TF-IDF
+│   ├── confusion_matrix_sbert.png  # Confusion matrix SBERT
+│   ├── confusion_matrix_indobert.png # Confusion matrix IndoBERT
+│   ├── hasil_evaluasi.csv          # Tabel F1, Precision, Recall, AUC per model
+│   └── label_distribution.png      # Distribusi label dataset
+├── data/
+│   ├── id_msrp_train.csv           # Dataset train MSRP Indonesia (4.076 baris)
+│   ├── id_msrp_val.csv             # Dataset validation MSRP Indonesia (1.725 baris)
+│   ├── msrp_train_clean.csv        # Data train setelah preprocessing
+│   ├── msrp_val_clean.csv          # Data validation setelah preprocessing
+│   └── similarities.pkl            # Hasil similarity score ketiga model
+└── docker/
+    ├── Dockerfile                  # Build image Streamlit app
+    ├── docker-compose.yml          # Orkestrasi container + Nginx
+    ├── nginx.conf                  # Konfigurasi Nginx reverse proxy
+    └── .env.example                # Template environment variable
 ```
 
 ## Cara Install
@@ -65,32 +83,49 @@ pip install -r requirements.txt
 
 ## Cara Run
 
-### Lokal
+### Opsi 1: All-in-One Pipeline (Tercepat)
+```bash
+python run_pipeline.py
+```
+Script ini menjalankan seluruh proses: load dataset → preprocessing → running 3 model → evaluasi → generate grafik.
+
+### Opsi 2: Streamlit Dashboard
 ```bash
 streamlit run app.py
 ```
 
-### Google Colab
+### Opsi 3: Google Colab (Notebook per Step)
 Buka notebook di folder `notebooks/` dan jalankan secara berurutan:
 1. `01_EDA_preprocessing.ipynb` — EDA & preprocessing
 2. `02_model_comparison.ipynb` — Running 3 model
 3. `03_evaluation_final.ipynb` — Evaluasi & grafik
 
-### Docker
+### Opsi 4: Docker
 ```bash
 cd docker
 docker compose up -d --build
 ```
 
-## Evaluasi
+## Hasil Evaluasi
 
-Hasil evaluasi disimpan di folder `assets/`:
-- `hasil_evaluasi.csv` — Tabel F1, Precision, Recall, AUC per model
-- `roc_curve.png` — Grafik ROC curve
+Dataset: MSRP Indonesia validation set (1.725 pasang kalimat)
+
+| Model | F1-Score | Precision | Recall | AUC-ROC | Threshold |
+|---|---|---|---|---|---|
+| **TF-IDF** | 0.6920 | 0.8414 | 0.5876 | 0.7386 | 0.6622 |
+| **SBERT** | **0.7161** | **0.8412** | **0.6234** | **0.7635** | 0.8459 |
+| **IndoBERT** | 0.6817 | 0.8271 | 0.5798 | 0.7242 | 0.8723 |
+
+**Kesimpulan:** SBERT menghasilkan performa terbaik dengan F1-Score 0.716 dan AUC-ROC 0.763. Semua model memiliki precision tinggi (>0.82) namun recall masih moderat (~58-62%), menunjukkan model bersifat konservatif (minim false positive).
+
+Hasil evaluasi visual tersedia di folder `assets/`:
+- `roc_curve.png` — Grafik ROC curve perbandingan ketiga model
 - `confusion_matrix_*.png` — Confusion matrix per model
+- `hasil_evaluasi.csv` — Tabel metrik lengkap
 
 ## Referensi
 
-- Reimers & Gurevych (2019). Sentence-BERT
+- Reimers & Gurevych (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks
 - IndoBERT: indobenchmark/indobert-base-p1
 - Microsoft Research Paraphrase Corpus (MSRP)
+- Jakarta AI Research — id-paraphrase-detection
