@@ -282,9 +282,10 @@ for name, scores in sims.items():
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
     plt.tight_layout()
-    plt.savefig(f'assets/confusion_matrix_{name.lower()}.png', dpi=150, bbox_inches='tight')
+    safe_name = name.lower().replace('-', '').replace(' ', '_')
+    plt.savefig(f'assets/confusion_matrix_{safe_name}.png', dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Saved: assets/confusion_matrix_{name.lower()}.png")
+    print(f"Saved: assets/confusion_matrix_{safe_name}.png")
 
 # Save evaluation results
 df_metrics.to_csv('assets/hasil_evaluasi.csv', index=False)
