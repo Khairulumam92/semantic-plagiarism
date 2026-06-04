@@ -72,14 +72,14 @@ st.markdown('<p class="demo-header">Demo Deteksi Plagiarisme</p>', unsafe_allow_
 st.markdown('<p class="demo-sub">Masukkan dua teks untuk mengecek kesamaan makna menggunakan model AI</p>', unsafe_allow_html=True)
 
 @st.cache_resource
-def load_sbert_model():
+def load_sbert_model(use_int8=True):
     from model_sbert import SBERTModel
-    return SBERTModel()
+    return SBERTModel(use_int8=use_int8)
 
 @st.cache_resource
-def load_indobert_model():
+def load_indobert_model(use_int8=True):
     from model_indobert import IndoBERTModel
-    return IndoBERTModel()
+    return IndoBERTModel(use_int8=use_int8)
 
 csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', 'hasil_evaluasi.csv')
 thresholds = {'TF-IDF': 0.5, 'SBERT': 0.75, 'IndoBERT': 0.75}
@@ -124,17 +124,21 @@ if check_btn:
         t1 = clean_text(text1)
         t2 = clean_text(text2)
 
-        with st.spinner("Memproses..."):
-            if model_choice == "TF-IDF":
+        if model_choice == "TF-IDF":
+            with st.spinner("Memproses dengan TF-IDF..."):
                 from model_tfidf import TFIDFModel
                 model = TFIDFModel()
                 model.fit([(t1, t2)])
                 score = model.get_similarity(t1, t2)
-            elif model_choice == "SBERT":
-                model = load_sbert_model()
+        elif model_choice == "SBERT":
+            with st.spinner("Memuat model SBERT (INT8 quantized, pertama kali mungkin 10-15 detik)..."):
+                model = load_sbert_model(use_int8=True)
+            with st.spinner("Menghitung similarity dengan SBERT..."):
                 score = model.get_similarity(t1, t2)
-            else:
-                model = load_indobert_model()
+        else:
+            with st.spinner("Memuat model IndoBERT (INT8 quantized, pertama kali mungkin 15-20 detik)..."):
+                model = load_indobert_model(use_int8=True)
+            with st.spinner("Menghitung similarity dengan IndoBERT..."):
                 score = model.get_similarity(t1, t2)
 
         threshold = thresholds[model_choice]

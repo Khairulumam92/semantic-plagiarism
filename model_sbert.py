@@ -1,11 +1,16 @@
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import torch
 
 
 class SBERTModel:
-    def __init__(self, model_name='paraphrase-multilingual-mpnet-base-v2'):
+    def __init__(self, model_name='paraphrase-multilingual-mpnet-base-v2', use_int8=False):
         self.model = SentenceTransformer(model_name)
+        if use_int8:
+            self.model = torch.quantization.quantize_dynamic(
+                self.model, {torch.nn.Linear}, dtype=torch.qint8
+            )
 
     def encode(self, texts, batch_size=32):
         return self.model.encode(texts, batch_size=batch_size, show_progress_bar=True)

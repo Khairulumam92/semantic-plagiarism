@@ -11,8 +11,10 @@ services:
       - "8501:8501"
     volumes:
       - ../assets:/app/assets
+      - hf_cache:/root/.cache/huggingface
     environment:
       - PYTHONUNBUFFERED=1
+      - HF_HOME=/root/.cache/huggingface
     networks:
       - webnet
 
@@ -32,3 +34,7 @@ services:
 networks:
   webnet:
     driver: bridge
+
+volumes:
+  hf_cache:
+    driver: local

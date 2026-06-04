@@ -5,12 +5,17 @@ import numpy as np
 
 
 class IndoBERTModel:
-    def __init__(self, model_name='indobenchmark/indobert-base-p1'):
+    def __init__(self, model_name='indobenchmark/indobert-base-p1', use_int8=False):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModel.from_pretrained(model_name)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
         self.model.eval()
+        
+        if use_int8:
+            self.model = torch.quantization.quantize_dynamic(
+                self.model, {torch.nn.Linear}, dtype=torch.qint8
+            )
 
     def mean_pooling(self, model_output, attention_mask):
         token_embeddings = model_output[0]
