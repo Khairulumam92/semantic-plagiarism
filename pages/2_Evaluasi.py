@@ -4,7 +4,7 @@ import os
 
 st.set_page_config(
     page_title="Evaluasi - Deteksi Plagiarisme",
-    page_icon=":chart_with_upwards_trend:",
+    page_icon="📊",
     layout="wide"
 )
 
@@ -149,7 +149,7 @@ if os.path.exists(csv_path):
                 "SBERT": "Model terbaik secara keseluruhan. Embedding multilingual memungkinkan pemahaman konteks yang lebih baik, menghasilkan F1 dan AUC tertinggi di antara ketiga model.",
                 "IndoBERT": "Model khusus Bahasa Indonesia dengan arsitektur BERT. Performa sedikit di bawah SBERT karena tidak di-fine-tune untuk task paraphrase detection secara spesifik."
             }
-            st.info(interpretations[name], icon=":bulb:")
+            st.info(interpretations[name], icon="💡")
 
     st.markdown("---")
     st.markdown("### Visualisasi")
@@ -173,4 +173,4 @@ if os.path.exists(csv_path):
             st.warning(f"Confusion matrix untuk {cm_model.upper()} belum tersedia.")
 
 else:
-    st.warning("File evaluasi belum tersedia. Jalankan `python run_pipeline.py` terlebih dahulu.", icon=":warning:")
+    st.warning("File evaluasi belum tersedia. Jalankan `python run_pipeline.py` terlebih dahulu.", icon="⚠️")

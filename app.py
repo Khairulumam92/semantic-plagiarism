@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Deteksi Plagiarisme Semantik",
-    page_icon=":mag:",
+    page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -99,11 +99,11 @@ st.markdown("### Navigasi")
 
 nav_col1, nav_col2, nav_col3 = st.columns(3)
 with nav_col1:
-    st.page_link("pages/1_Demo.py", label="Demo", icon=":rocket:")
+    st.page_link("pages/1_Demo.py", label="Demo", icon="🚀")
 with nav_col2:
-    st.page_link("pages/2_Evaluasi.py", label="Evaluasi", icon=":chart_with_upwards_trend:")
+    st.page_link("pages/2_Evaluasi.py", label="Evaluasi", icon="📊")
 with nav_col3:
-    st.page_link("pages/3_Tentang.py", label="Tentang", icon=":book:")
+    st.page_link("pages/3_Tentang.py", label="Tentang", icon="📖")
 
 st.markdown("---")
 

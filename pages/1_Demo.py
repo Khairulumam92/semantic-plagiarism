@@ -8,7 +8,7 @@ from preprocessing import clean_text
 
 st.set_page_config(
     page_title="Demo - Deteksi Plagiarisme",
-    page_icon=":rocket:",
+    page_icon="🚀",
     layout="wide"
 )
 
@@ -109,7 +109,7 @@ with col_config:
         "SBERT": "Sentence-BERT multilingual, memahami konteks semantik",
         "IndoBERT": "Model BERT khusus Bahasa Indonesia"
     }
-    st.info(model_descriptions[model_choice], icon=":bulb:")
+    st.info(model_descriptions[model_choice], icon="💡")
 
     st.markdown(f"""
     <span class="model-badge badge-{model_choice.lower().replace('-', '')}">{model_choice}</span>
@@ -169,7 +169,7 @@ if check_btn:
         st.markdown(f"**Model:** {model_choice} &nbsp;|&nbsp; **Threshold:** {threshold:.4f} &nbsp;|&nbsp; **Skor:** {score:.4f}")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        with st.expander("Lihat teks setelah preprocessing", icon=":gear:"):
+        with st.expander("Lihat teks setelah preprocessing", icon="⚙️"):
             col_a, col_b = st.columns(2)
             with col_a:
                 st.markdown("**Teks 1 (cleaned):**")
@@ -178,4 +178,4 @@ if check_btn:
                 st.markdown("**Teks 2 (cleaned):**")
                 st.code(t2 if t2 else "(kosong)")
     else:
-        st.warning("Masukkan kedua teks terlebih dahulu.", icon=":warning:")
+        st.warning("Masukkan kedua teks terlebih dahulu.", icon="⚠️")

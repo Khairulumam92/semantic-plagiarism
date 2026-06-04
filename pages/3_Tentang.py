@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Tentang - Deteksi Plagiarisme",
-    page_icon=":book:",
+    page_icon="📖",
     layout="wide"
 )
 
