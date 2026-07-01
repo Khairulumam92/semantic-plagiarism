@@ -32,25 +32,28 @@ semantic-plagiarism/
 ├── model_sbert.py              # Model 1: Multilingual SBERT + cosine similarity
 ├── model_indobert.py           # Model 2: IndoBERT + mean pooling + cosine similarity
 ├── evaluate.py                 # Fungsi evaluasi: F1, Precision, Recall, AUC-ROC, threshold tuning
-├── run_pipeline.py             # Script lengkap: download data → train → evaluasi (all-in-one)
-├── requirements.txt            # Dependencies
+├── run_pipeline.py             # Script lengkap: download data → training → evaluasi (all-in-one)
+├── requirements.txt            # Dependencies Python
 ├── README.md                   # Dokumentasi proyek
 ├── .gitignore
+├── static/
+│   └── styles.css              # Design system untuk Streamlit (dark mode, responsive)
 ├── pages/
 │   ├── 1_Demo.py               # Demo interaktif: input 2 teks → pilih model → hasil
 │   ├── 2_Evaluasi.py           # Tabel metrik + grafik ROC curve + confusion matrix
 │   └── 3_Tentang.py            # Penjelasan metode, dataset, dan referensi
 ├── notebooks/
-│   ├── 01_EDA_preprocessing.ipynb  # EDA, distribusi label, preprocessing
-│   ├── 02_model_comparison.ipynb   # Running 3 model, hitung similarity
-│   └── 03_evaluation_final.ipynb   # Threshold tuning, F1/AUC, generate grafik
+│   └── notebook.ipynb          # Notebook lengkap: EDA, model comparison, evaluasi + visualisasi
 ├── assets/
 │   ├── roc_curve.png               # Grafik ROC curve ketiga model
 │   ├── confusion_matrix_tfidf.png  # Confusion matrix TF-IDF
 │   ├── confusion_matrix_sbert.png  # Confusion matrix SBERT
 │   ├── confusion_matrix_indobert.png # Confusion matrix IndoBERT
-│   ├── hasil_evaluasi.csv          # Tabel F1, Precision, Recall, AUC per model
-│   └── label_distribution.png      # Distribusi label dataset
+│   ├── metrics_comparison.png      # Grafik perbandingan metrik
+│   ├── label_distribution.png      # Distribusi label dataset
+│   ├── text_length_distribution.png # Distribusi panjang teks
+│   ├── word_overlap_distribution.png # Distribusi word overlap
+│   └── hasil_evaluasi.csv          # Tabel F1, Precision, Recall, AUC per model
 ├── data/
 │   ├── id_msrp_train.csv           # Dataset train MSRP Indonesia (4.076 baris)
 │   ├── id_msrp_val.csv             # Dataset validation MSRP Indonesia (1.725 baris)
@@ -94,11 +97,11 @@ Script ini menjalankan seluruh proses: load dataset → preprocessing → runnin
 streamlit run app.py
 ```
 
-### Opsi 3: Google Colab (Notebook per Step)
-Buka notebook di folder `notebooks/` dan jalankan secara berurutan:
-1. `01_EDA_preprocessing.ipynb` — EDA & preprocessing
-2. `02_model_comparison.ipynb` — Running 3 model
-3. `03_evaluation_final.ipynb` — Evaluasi & grafik
+### Opsi 3: Google Colab
+Buka `notebooks/notebook.ipynb` di Google Colab dan jalankan semua sel secara berurutan. Notebook ini mencakup:
+1. **EDA & Preprocessing** — Distribusi label, statistik teks, word overlap, cleaning teks
+2. **Model Comparison** — Running TF-IDF, SBERT, IndoBERT, hitung similarity
+3. **Evaluasi & Visualisasi** — Threshold tuning, F1/AUC, ROC curve, confusion matrix, bar chart
 
 ### Opsi 4: Docker
 ```bash
@@ -121,6 +124,7 @@ Dataset: MSRP Indonesia validation set (1.725 pasang kalimat)
 Hasil evaluasi visual tersedia di folder `assets/`:
 - `roc_curve.png` — Grafik ROC curve perbandingan ketiga model
 - `confusion_matrix_*.png` — Confusion matrix per model
+- `metrics_comparison.png` — Bar chart perbandingan metrik
 - `hasil_evaluasi.csv` — Tabel metrik lengkap
 
 ## Referensi
